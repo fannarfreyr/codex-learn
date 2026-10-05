@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "id": "m1-connectivity",
+  "mode": "teaching",
+  "goal": "Explain connectivity",
+  "evidence_refs": [
+    "m1-explanation",
+    "m1-application"
+  ],
+  "pending_question": null,
+  "next_action": "Verify readiness before trees",
+  "provenance": {
+    "source": "synthetic",
+    "surface": "manual-script"
+  },
+  "observations": [
+    {
+      "schema_version": 1,
+      "id": "m1-explanation",
+      "kind": "assessment",
+      "timestamp": "2026-10-05T13:00:00Z",
+      "session_id": "m1-connectivity",
+      "concept_ids": [
+        "graph-theory.connectivity"
+      ],
+      "provenance": {
+        "source": "synthetic",
+        "surface": "manual-script"
+      },
+      "question": {
+        "id": "m1-explanation",
+        "text": "How do adjacency and connectivity differ?",
+        "capability": "explanation",
+        "scope": "Paths and reachability in finite simple undirected graphs"
+      },
+      "response": "Adjacent vertices share an edge; connected vertices have a path, possibly through other vertices.",
+      "assistance": "none",
+      "rubric": {
+        "criteria": [
+          "Distinguish edge from path",
+          "Explain indirect reachability"
+        ]
+      },
+      "evaluation": {
+        "outcome": "correct",
+        "rationale": "Response meets both scoped criteria.",
+        "misconceptions": []
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "m1-application",
+      "kind": "assessment",
+      "timestamp": "2026-10-05T13:00:00Z",
+      "session_id": "m1-connectivity",
+      "concept_ids": [
+        "graph-theory.connectivity"
+      ],
+      "provenance": {
+        "source": "synthetic",
+        "surface": "manual-script"
+      },
+      "question": {
+        "id": "m1-application",
+        "text": "With vertices P,Q,R,S and edges PQ, QR, which vertices can P reach?",
+        "capability": "application",
+        "scope": "Paths and reachability in finite simple undirected graphs"
+      },
+      "response": "P reaches Q and R and itself by a length-zero path, but not S.",
+      "assistance": "none",
+      "rubric": {
+        "criteria": [
+          "Follow PQ then QR",
+          "Exclude isolated S"
+        ]
+      },
+      "evaluation": {
+        "outcome": "correct",
+        "rationale": "Response meets both scoped criteria.",
+        "misconceptions": []
+      }
+    }
+  ]
+}

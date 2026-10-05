@@ -1,52 +1,92 @@
-# Codex-Native Learning System Plan
+# Evidence-Based Codex Learning System Plan
 
-## Purpose
+## Execution Objective
 
-Build a Codex-native learning system inspired by [amosblomqvist/learn](https://github.com/amosblomqvist/learn). Start with repository instructions, one teaching skill, ordinary conversation, and local learner records. Validate the complete teaching loop before adding infrastructure.
+Implement the six-milestone MVP for one learner and seven graph-theory concepts, then demonstrate conservative background bootstrapping, adaptive calibration, evidence-based teaching, and continuity across fresh Codex chats using the same local repository checkout.
 
-This is an implementation plan. Saving these documents does not authorize implementing the milestones.
+This is the approved implementation plan, incorporating the three final clarifications. It replaces the earlier five-milestone plan. Saving these documents does not begin implementation or authorize additional scope.
 
 ## Planning Documents
 
-- [Architecture](docs/architecture.md): teaching behavior, component responsibilities, learner-state interface, recommended architectural changes, and Codex capability checks.
-- [Milestones](docs/milestones.md): objectives, files/components, implementation tasks, acceptance criteria, validation, and deferred decisions for each usable increment.
+- [Architecture](docs/architecture.md): learner model, schema, evidence rules, mutation controls, repository structure, competency graph, and Codex capability checks.
+- [Milestones](docs/milestones.md): six usable increments, dependencies, acceptance criteria, validation procedures, and deferred extensions.
 
 ## Agreed Defaults
 
-| Decision | Initial behavior |
+| Decision | MVP behavior |
 | --- | --- |
-| Learners | One learner, any topic |
+| Learners | One learner; validate the MVP in graph theory |
 | Primary surface | Codex desktop app; keep instructions portable |
-| Storage | Local `.learn/`, ignored by Git |
-| Progression | Present the plan and begin without a separate approval checkpoint |
-| Advancement evidence | Unaided explanation or derivation, plus a new application |
-| Retention evidence | Successful unaided retrieval in a later session |
-| Active work | One learning goal and one state-writing tutor per checkout |
+| Active work | One learning goal and one state-writing tutor |
+| Interaction | Conversational assessments; wait for actual learner responses |
+| Progression | Present the learning plan and begin without repeated approval checkpoints |
+| Advancement evidence | Unaided explanation or derivation plus novel application |
+| Storage | JSON records in local, Git-ignored `.learn/`; Markdown instructions and documentation |
+| Persistence | Fresh Codex chats using the same local repository checkout |
+| Historical authority | Preserved evidence log, including corrections |
+| Competency states | Provisional derived projections over evidence |
+| Background mapping | Small explicit rules producing conservative exposure priors |
 
 ## Core Learning Loop
 
-1. Establish the learner's goal and probe their relevant knowledge boundary.
-2. Identify prerequisites and distinguish demonstrated knowledge from uncertainty.
-3. Construct and present a small dependency-aware plan.
-4. Teach one concept at a time.
-5. Assess understanding before progressing.
-6. Repair misunderstandings and assess again with a different question.
-7. Persist demonstrated evidence and the next checkpoint for future sessions.
+1. Determine what the learner wants to learn.
+2. Probe relevant existing knowledge.
+3. Identify prerequisite concepts.
+4. Construct a dependency-aware learning path.
+5. Teach one unresolved concept at a time.
+6. Test understanding through actual learner responses.
+7. Repair misunderstandings and reassess.
+8. Persist evidence and update provisional projections and checkpoints.
 
-## Implementation Order
+Background declarations seed exposure priors. Explicit calibration gathers observations. Normal teaching contributes further evidence to the same learner model. No stage makes the profile permanently complete.
 
-| Milestone | Usable result | Entry condition |
+## Implementation Sequence
+
+| Milestone | Usable result | Dependency |
 | --- | --- | --- |
-| 1. Complete learning loop | Teach, assess, repair, save, and resume in a fresh chat | Verify essential local capabilities |
-| 2. Reliable records and retrieval | Validate evidence, recover partial updates, and distinguish demonstration from retention | Milestone 1 works |
-| 3. Research and diagrams | Add targeted research and verified conceptual/geometric diagrams | Single-agent loop works; research or visuals improve representative lessons |
-| 4. Optional lifecycle logging | Add advisory automatic bookkeeping | At least two missed checkpoints across five representative sessions after improving instructions |
-| 5. Optional MCP learning tools | Expose validated learning operations through local tools | A documented limitation remains that a local utility cannot adequately solve |
+| 1. Minimum viable tutor | Teach, assess, repair, save, and resume using stable concept IDs | Verify essential local capabilities |
+| 2. Stable learner-state representation | Controlled evidence-backed mutations and rebuildable projections | Milestone 1 |
+| 3. Small competency ontology | Seven concepts and shared traversal for diagnostics and teaching | Milestone 2 |
+| 4. Background-based profile bootstrapping | Inspectable exposure priors without credential-based mastery | Milestones 2–3 |
+| 5. Adaptive competency calibration | Short response-dependent diagnostics | Milestones 2–4 |
+| 6. Dependency-aware personalized lesson planning | Skip, refresh, verify, or teach from graph and evidence | Milestones 1–5 |
 
-Complete Milestones 1 and 2, then use the system for several real sessions. Add Milestone 3 where it improves learning. Milestones 4 and 5 are independent, conditional extensions; neither is required to declare the initial system usable.
+Milestone 1 is independently useful. The full MVP completes all six milestones and passes the background-to-calibration-to-teaching-to-resumption demonstration.
 
-## Planning Baseline
+## Changes from the Previous Plan
 
-At planning time, the repository contained only the contributor `AGENTS.md`, with no application, build system, tests, or configured learning tools. The bundled CLI reported `0.160.0`; desktop capability behavior remains subject to the checks in the architecture document.
+Preserve the single-learner, desktop-first approach, local JSON storage, conversational assessments, bounded diagnostics, evidence requirements for advancement, checkpointing, and single-writer ownership.
 
-The reference and official documentation were reviewed on October 5, 2026. Recheck version-sensitive behavior before implementing the relevant milestone.
+Replace the previous four-state summary with the richer provisional learner model. Replace session records as primary historical authority with independent evidence records referenced by sessions. Replace plan-specific prerequisite definitions with a shared competency graph. Replace the five-milestone sequence and early release boundary with the six-milestone MVP.
+
+Postpone researcher and visualization agents until learner-model validation. Keep hooks, MCP, databases, custom UI, structured quiz tools, larger competency libraries, packaging, and plugin distribution deferred.
+
+Retain the reference project's emphasis on prerequisites, motivated explanations, and assessment without depending on its pi extensions. [Reference repository](https://github.com/amosblomqvist/learn)
+
+## Final Clarifications and Scope Boundary
+
+- The evidence log remains authoritative. States, confidence, exposure priors, and capability summaries are provisional projections. Defer deciding whether learning history, current readiness, and retrieval condition need separate dimensions until MVP evaluation supports that change.
+- Milestone 1 uses final IDs such as `graph-theory.terminology` and `graph-theory.connectivity`. Do not introduce temporary identifiers or migrations merely because graph traversal arrives in Milestone 3.
+- MVP persistence means continuity across fresh Codex chats on the same local repository checkout. `.learn/` remains Git-ignored. Cross-machine persistence, clean-clone persistence, cloud synchronization, backup, and multi-device learner profiles are out of scope.
+
+## Recommended MVP Boundary
+
+One learner, seven graph-theory concepts, a tiny explicit background mapping, one teaching skill, one calibration skill, a small Python standard-library state utility, JSON persistence, and human pedagogical evaluation supported by focused deterministic tests.
+
+This plan defines the approved implementation scope; the progress notes below describe work already present in the checkout. Verify actual client behavior before depending on documented capabilities. Future scope changes must be justified by evidence from this MVP.
+
+## Implementation Progress
+
+- Milestone 1: teaching skill, stable-ID observation envelope, contributor guidance, ignored personal-state path, and synthetic fixture implemented. Fixture test and ignore check pass. Scripted explanation/application manually inspected; live skill loading and fresh-chat behavior were subsequently verified in final validation.
+- Skill validation discovery: system Python lacks PyYAML required by the bundled validator; no application dependency was added.
+- Milestone 2: deterministic validation passed with 20 total tests. Synthetic rusty-learner observations were manually inspected; authoritative responses and evaluations remain separate. State utility supports immutable IDs, explicit corrections, projection rebuild, and scoped activation. Live-chat gates were subsequently verified in final validation.
+- Milestone 3: validation passed with 24 total tests. BFS-shortest-path prerequisite traversal and bank coverage were manually inspected; all seven early IDs are retained.
+- Milestone 4: validation passed with 30 total tests. Manual degree-only initialization leaves all seven competence states unknown; three foundations receive medium exposure priors, and the other four remain exposure-unknown.
+- Milestone 5: 40 deterministic tests passed at this stage. The calibration skill uses persisted, response-dependent selection. Manual synthetic credential overestimation redirects connectivity to terminology without promoting competence. Pending unanswered questions remain unchanged. Live conversational validation subsequently passed.
+- Milestone 6: 51 deterministic tests passed at this stage. The manual synthetic trajectory skips demonstrated terminology/connectivity, refreshes rusty BFS, and then skips BFS after fresh unaided evidence. Actual fresh Codex chat validation subsequently passed.
+
+## Final MVP Validation
+
+All six milestones are implemented and validated. The final suite passes 56 standard-library tests, including early-ID compatibility, immutable corrections, adaptive selection, evidence-derived lesson actions, and checkpoint recovery. Two actual Codex chats demonstrated the background-to-calibration-to-teaching-to-fresh-chat loop, with all 17 live-test observations explicitly synthetic and personal `.learn/` untouched.
+
+See [validation results](docs/validation.md) and [live behavior, evidence trace, and failures](docs/validation-live.md). The observed sentence-form background alias gap was corrected without expanding credential interpretation. The deferred architecture decisions and seven-concept boundary remain unchanged.

@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "rules": [
+    {
+      "id": "bsc-discrete-math-cs-v1",
+      "category": "bsc-discrete-math-cs",
+      "aliases": [
+        "BSc in Discrete Mathematics and Computer Science",
+        "I have a BSc in Discrete Mathematics and Computer Science",
+        "BSc Discrete Mathematics and CS",
+        "BSc: Discrete Mathematics + Computer Science"
+      ],
+      "exposure": {
+        "graph-theory.terminology": "medium",
+        "graph-theory.connectivity": "medium",
+        "graph-theory.trees": "medium"
+      }
+    },
+    {
+      "id": "graph-theory-course-v1",
+      "category": "graph-theory-course",
+      "aliases": [
+        "Completed a graph theory course",
+        "Completion of a graph theory course"
+      ],
+      "exposure": {
+        "graph-theory.terminology": "high",
+        "graph-theory.connectivity": "high",
+        "graph-theory.trees": "high"
+      }
+    }
+  ]
+}

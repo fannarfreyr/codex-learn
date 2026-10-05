@@ -1,33 +1,23 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
+## Structure and Scope
 
-This repository is currently an empty Git project. No source code, tests, assets, or dependency manifests exist yet. When adding the initial implementation, group files by purpose: `src/` for application code, `tests/` for tests, and `assets/` for static resources where applicable. Document the actual layout and entry points in `README.md`; avoid creating unused directories.
+`PLANS.md` and `docs/` define the approved six-milestone MVP. Skills live in `.agents/skills/`, shared graph-theory content in `competencies/`, state operations in `scripts/`, and synthetic tests in `tests/`. Personal `.learn/` records are Git-ignored; persistence covers fresh chats in the same checkout only.
 
-## Build, Test, and Development Commands
+## Learning Requests
 
-No build system, development server, or test commands are configured. Do not assume commands such as `npm test` or `make build` are available.
+For intentional learning requests, read `.agents/skills/teach/SKILL.md`; for explicit calibration, read `.agents/skills/calibrate/SKILL.md`. Repository maintenance must not trigger teaching or modify personal state.
 
-- `git status --short`: review local changes before committing.
-- `git diff --check`: detect whitespace errors in tracked changes.
-- `git diff`: inspect changes to tracked files before opening a pull request.
+Ask one assessment, end your response, and wait for the actual learner. Never invent answers or claim synthetic tests are personal evidence. Credentials create exposure priors, never active competence. Require unaided explanation or derivation plus novel application before advancement.
 
-When introducing tooling, add reproducible setup, build, test, and local run commands to `README.md`, and update this guide to match.
+## Evidence and Changes
 
-## Coding Style & Naming Conventions
+Evidence history is authoritative; projections are provisional. Preserve evidence and append corrections. Use `scripts/learn_state.py`, not direct projection edits. Keep final IDs from the first observation, including `graph-theory.terminology` and `graph-theory.connectivity`.
 
-No language-specific conventions, formatter, or linter have been established. Use consistent indentation within each file and descriptive names. Prefer lowercase, hyphen-separated documentation filenames, with standard exceptions such as `README.md` and `AGENTS.md`. When selecting a language, adopt its conventional formatter and commit the configuration alongside the initial code.
+Stay within seven graph-theory concepts, one learner, and one writer. Do not introduce specialist agents, MCP, hooks, databases, synchronization, custom UI, or numeric scores.
 
-## Testing Guidelines
+## Development and Contributions
 
-No testing framework or coverage threshold is configured. Add tests for new behavior and bug fixes once executable code exists. Use the chosen framework's discovery conventions, such as `test_*.py` or `*.test.ts`, and document the test command. Keep tests deterministic and independent of private credentials or external services.
+Use Python's standard library, four-space indentation, descriptive snake_case names, and versioned JSON. Run `python3 -m unittest discover -s tests -v` and `git diff --check`. Isolate and label synthetic state. Record milestone validation and discoveries before proceeding.
 
-## Commit & Pull Request Guidelines
-
-There is no commit history from which to infer a message convention. Use concise, imperative subjects, for example, `Add initial project setup`. Keep commits focused on one logical change.
-
-Pull requests should explain the change, its purpose, and validation performed. Link relevant issues and include screenshots for visible interface changes. Explicitly state when tests could not be run.
-
-## Security & Configuration
-
-Never commit credentials or secrets. If configuration is needed, provide placeholder examples and ignore local secret files and generated artifacts.
+Use focused imperative commits, such as `Add evidence-backed projections`. PRs explain behavior, validation, and limitations. Never commit `.learn/`, credentials, or generated caches.

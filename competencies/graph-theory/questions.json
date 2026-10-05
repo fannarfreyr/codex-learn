@@ -1,0 +1,230 @@
+{
+  "schema_version": 1,
+  "graph_version": 1,
+  "questions": [
+    {
+      "id": "graph-theory.terminology.explanation",
+      "concept_id": "graph-theory.terminology",
+      "text": "What are vertices and edges, and how does degree relate to adjacency?",
+      "capability": "explanation",
+      "scope": "Vertices, edges, adjacency, degree",
+      "scope_version": 1,
+      "level": "foundation",
+      "novel": false,
+      "rubric": {
+        "criteria": [
+          "Distinguish objects from pairwise edges",
+          "Define degree as incident edge count"
+        ]
+      }
+    },
+    {
+      "id": "graph-theory.terminology.application",
+      "concept_id": "graph-theory.terminology",
+      "text": "In vertices A,B,C,D with edges AB,AC,CD, list neighbors of A and the degree of C.",
+      "capability": "application",
+      "scope": "Vertices, edges, adjacency, degree",
+      "scope_version": 1,
+      "level": "foundation",
+      "novel": true,
+      "rubric": {
+        "criteria": [
+          "A neighbors B,C",
+          "C has degree 2"
+        ]
+      }
+    },
+    {
+      "id": "graph-theory.connectivity.explanation",
+      "concept_id": "graph-theory.connectivity",
+      "text": "Explain adjacency versus connectivity, including an indirect path.",
+      "capability": "explanation",
+      "scope": "Paths and reachability in finite simple undirected graphs",
+      "scope_version": 1,
+      "level": "core",
+      "novel": false,
+      "rubric": {
+        "criteria": [
+          "Adjacency needs one edge",
+          "Connectivity permits a path"
+        ]
+      }
+    },
+    {
+      "id": "graph-theory.connectivity.application",
+      "concept_id": "graph-theory.connectivity",
+      "text": "Vertices P,Q,R,S,T have edges PQ,QR,ST. Which vertices can P reach, and what are the components?",
+      "capability": "application",
+      "scope": "Paths and reachability in finite simple undirected graphs",
+      "scope_version": 1,
+      "level": "core",
+      "novel": true,
+      "rubric": {
+        "criteria": [
+          "P reaches P,Q,R",
+          "Components PQR and ST"
+        ]
+      }
+    },
+    {
+      "id": "graph-theory.trees.explanation",
+      "concept_id": "graph-theory.trees",
+      "text": "What makes an undirected graph a tree? Why are connectivity and acyclicity both necessary?",
+      "capability": "explanation",
+      "scope": "Connected acyclic graphs; identify and explain examples",
+      "scope_version": 1,
+      "level": "core",
+      "novel": false,
+      "rubric": {
+        "criteria": [
+          "Tree is connected and acyclic",
+          "Neither condition alone is sufficient"
+        ]
+      }
+    },
+    {
+      "id": "graph-theory.trees.application",
+      "concept_id": "graph-theory.trees",
+      "text": "For vertices A,B,C,D compare edges AB,BC,CD with edges AB,BC,CA and isolated D. Which is a tree and why?",
+      "capability": "application",
+      "scope": "Connected acyclic graphs; identify and explain examples",
+      "scope_version": 1,
+      "level": "core",
+      "novel": true,
+      "rubric": {
+        "criteria": [
+          "First graph is a connected path with no cycle",
+          "Second has a cycle and isolated D"
+        ]
+      }
+    },
+    {
+      "id": "graph-theory.bfs.explanation",
+      "concept_id": "graph-theory.bfs",
+      "text": "How does BFS explore distance layers? How does it avoid revisiting a vertex?",
+      "capability": "explanation",
+      "scope": "Explain and trace breadth-first exploration",
+      "scope_version": 1,
+      "level": "stretch",
+      "novel": false,
+      "rubric": {
+        "criteria": [
+          "Explore frontier by frontier",
+          "Track visited vertices"
+        ]
+      }
+    },
+    {
+      "id": "graph-theory.bfs.application",
+      "concept_id": "graph-theory.bfs",
+      "text": "From A use BFS on edges AB,AC,BD,CD,DE. Give layers and explain where E appears.",
+      "capability": "application",
+      "scope": "Explain and trace breadth-first exploration",
+      "scope_version": 1,
+      "level": "stretch",
+      "novel": true,
+      "rubric": {
+        "criteria": [
+          "Layers A; B,C; D; E",
+          "E is at distance 3"
+        ]
+      }
+    },
+    {
+      "id": "graph-theory.dfs.explanation",
+      "concept_id": "graph-theory.dfs",
+      "text": "How does DFS choose a path and backtrack? Why keep track of visited vertices?",
+      "capability": "explanation",
+      "scope": "Explain and trace depth-first exploration",
+      "scope_version": 1,
+      "level": "stretch",
+      "novel": false,
+      "rubric": {
+        "criteria": [
+          "Follow one unexplored branch deeply",
+          "Backtrack and avoid revisits"
+        ]
+      }
+    },
+    {
+      "id": "graph-theory.dfs.application",
+      "concept_id": "graph-theory.dfs",
+      "text": "Trace DFS from A on AB,AC,BD,CD with alphabetical neighbor order; explain the backtracking.",
+      "capability": "application",
+      "scope": "Explain and trace depth-first exploration",
+      "scope_version": 1,
+      "level": "stretch",
+      "novel": true,
+      "rubric": {
+        "criteria": [
+          "Discovery order A,B,D,C",
+          "Return through explored branch when no unvisited neighbor remains"
+        ]
+      }
+    },
+    {
+      "id": "graph-theory.bfs-shortest-paths.explanation",
+      "concept_id": "graph-theory.bfs-shortest-paths",
+      "text": "Why does BFS find shortest paths in number of edges? Would that guarantee hold for arbitrary edge weights?",
+      "capability": "explanation",
+      "scope": "Explain and apply BFS to unweighted shortest paths",
+      "scope_version": 1,
+      "level": "stretch",
+      "novel": false,
+      "rubric": {
+        "criteria": [
+          "BFS first reaches each vertex at its minimum edge-count layer",
+          "Arbitrary weights invalidate the edge-count guarantee"
+        ]
+      }
+    },
+    {
+      "id": "graph-theory.bfs-shortest-paths.application",
+      "concept_id": "graph-theory.bfs-shortest-paths",
+      "text": "On AB,AC,BD,CE,ED find an unweighted shortest path from A to D using BFS layers; could ACED be shorter?",
+      "capability": "application",
+      "scope": "Explain and apply BFS to unweighted shortest paths",
+      "scope_version": 1,
+      "level": "stretch",
+      "novel": true,
+      "rubric": {
+        "criteria": [
+          "ABD uses 2 edges",
+          "ACED uses 3 and is longer"
+        ]
+      }
+    },
+    {
+      "id": "graph-theory.spanning-trees.explanation",
+      "concept_id": "graph-theory.spanning-trees",
+      "text": "What is a spanning tree of a connected graph, and why must it contain every vertex without cycles?",
+      "capability": "explanation",
+      "scope": "Identify and construct a spanning tree",
+      "scope_version": 1,
+      "level": "stretch",
+      "novel": false,
+      "rubric": {
+        "criteria": [
+          "Connected acyclic subgraph with all vertices",
+          "Edges must come from original graph"
+        ]
+      }
+    },
+    {
+      "id": "graph-theory.spanning-trees.application",
+      "concept_id": "graph-theory.spanning-trees",
+      "text": "For vertices A,B,C,D with edges AB,BC,CA,CD, choose a spanning tree and explain one edge you omit.",
+      "capability": "application",
+      "scope": "Identify and construct a spanning tree",
+      "scope_version": 1,
+      "level": "stretch",
+      "novel": true,
+      "rubric": {
+        "criteria": [
+          "Any two triangle edges plus CD suffice",
+          "Omitting third triangle edge removes the cycle"
+        ]
+      }
+    }
+  ]
+}

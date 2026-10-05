@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "version": 1,
+  "area_id": "graph-theory",
+  "scope": "Finite simple undirected graphs; explanation and diagram tracing only",
+  "sources": [
+    "https://algs4.cs.princeton.edu/41graph/"
+  ],
+  "concepts": [
+    {
+      "id": "graph-theory.terminology",
+      "label": "Graph terminology",
+      "parent_area": "graph-theory",
+      "scope": "Vertices, edges, adjacency, degree",
+      "scope_version": 1,
+      "prerequisites": []
+    },
+    {
+      "id": "graph-theory.connectivity",
+      "label": "Connectivity",
+      "parent_area": "graph-theory",
+      "scope": "Paths and reachability in finite simple undirected graphs",
+      "scope_version": 1,
+      "prerequisites": [
+        "graph-theory.terminology"
+      ]
+    },
+    {
+      "id": "graph-theory.trees",
+      "label": "Trees",
+      "parent_area": "graph-theory",
+      "scope": "Connected acyclic graphs; identify and explain examples",
+      "scope_version": 1,
+      "prerequisites": [
+        "graph-theory.connectivity"
+      ]
+    },
+    {
+      "id": "graph-theory.bfs",
+      "label": "BFS",
+      "parent_area": "graph-theory",
+      "scope": "Explain and trace breadth-first exploration",
+      "scope_version": 1,
+      "prerequisites": [
+        "graph-theory.connectivity"
+      ]
+    },
+    {
+      "id": "graph-theory.dfs",
+      "label": "DFS",
+      "parent_area": "graph-theory",
+      "scope": "Explain and trace depth-first exploration",
+      "scope_version": 1,
+      "prerequisites": [
+        "graph-theory.connectivity"
+      ]
+    },
+    {
+      "id": "graph-theory.bfs-shortest-paths",
+      "label": "BFS shortest paths",
+      "parent_area": "graph-theory",
+      "scope": "Explain and apply BFS to unweighted shortest paths",
+      "scope_version": 1,
+      "prerequisites": [
+        "graph-theory.bfs"
+      ]
+    },
+    {
+      "id": "graph-theory.spanning-trees",
+      "label": "Spanning trees",
+      "parent_area": "graph-theory",
+      "scope": "Identify and construct a spanning tree",
+      "scope_version": 1,
+      "prerequisites": [
+        "graph-theory.trees"
+      ]
+    }
+  ]
+}

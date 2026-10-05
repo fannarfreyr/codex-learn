@@ -1,196 +1,329 @@
 # Implementation Milestones
 
-Each milestone leaves a usable increment with explicit validation. Follow the [architecture](architecture.md) and the [agreed defaults](../PLANS.md). The first milestone validates the entire learning loop; infrastructure is not a prerequisite for a useful lesson.
+## Scope and Execution Order
 
-## Milestone 1 — A Complete Learning Loop
+Follow [PLANS.md](../PLANS.md) and the [architecture](architecture.md). The six-milestone MVP covers one learner and seven graph-theory concepts. Milestone 1 is independently usable; the full MVP validates background bootstrapping, calibration, personalized teaching, and resumption.
 
-### Objective
+Evidence is authoritative. Categorical states remain provisional derived projections. Stable final concept IDs are used from Milestone 1. Persistence is limited to fresh Codex chats on the same local checkout, with `.learn/` Git-ignored.
 
-Conduct a useful lesson and resume it from saved evidence in another chat.
-
-### Files and Components
-
-`AGENTS.md`, `README.md`, `.gitignore`, `.agents/skills/teach/SKILL.md`, supporting state templates and format documentation, runtime `.learn/` records, and manual validation scenarios.
-
-### Implementation Tasks
-
-- Verify repository instruction loading, teaching skill discovery, conversational turn-taking, and local state access in a fresh desktop chat.
-- Update the contributor guide for an instruction-based project. Separate teaching requests from implementation requests.
-- Define the sequence: establish goal, probe, identify prerequisites, present plan, teach, assess, repair or advance, and save.
-- Use up to five initial adaptive diagnostic questions. Probe relevant strands; record remaining uncertainty and begin at the earliest unconfirmed prerequisite.
-- Construct a small dependency graph with prerequisite-to-dependent edges. Teach only concepts whose necessary prerequisites have current supporting evidence.
-- Teach one concept at a time through motivation, explanation or guided derivation, and explicit connections.
-- Require explanation and novel application before advancement. After failure, diagnose and repair the misconception, then use a different assessment.
-- Save assessment evidence first, then update concept and plan summaries before asking the next question.
-- On resumption, read the goal, checkpoint, relevant concepts, and evidence. Report demonstrated knowledge and uncertainty.
-- Verify uncertain or changing subject claims with available research tools; keep unsupported claims provisional.
-- Ignore runtime `.learn/` records and track only templates and synthetic examples elsewhere.
-
-### Acceptance Criteria
-
-- A vague goal leads to a prerequisite-aware plan and a useful first lesson.
-- The tutor waits for real learner answers and does not expose assessment answers prematurely.
-- The learner can demonstrate understanding, repair a misconception, stop, and resume in a fresh chat without repeating the entire diagnostic process.
-- Skipped assessment permits continued explanation but does not create demonstrated evidence.
-- Hinted success or recognition alone does not unlock advancement.
-- Personal records remain Git-ignored.
-
-### Tests and Manual Validation
-
-Run scripted scenarios for a novice, partial knowledge, all-correct diagnostics, a confidently wrong answer, hinted success, and skipped assessment. Run two sessions in separate chats and inspect the saved evidence. Include an unrelated maintenance request to verify teaching does not activate.
-
-No automated behavioral grading or infrastructure is required for this milestone.
-
-### Deferred Architectural Decisions
-
-Specialist agents, automatic logging, scheduled review, numerical mastery scores, curriculum catalogs, MCP, databases, and custom UI.
-
-## Milestone 2 — Reliable Records and Retrieval-Based Review
+## Milestone 1 — Minimum Viable Tutor
 
 ### Objective
 
-Make saved progress trustworthy and useful across repeated sessions.
+Validate one concept's teaching, assessment, repair, persistence, and resumption.
 
 ### Files and Components
 
-Teaching skill references, a Python standard-library state utility, synthetic fixtures, `unittest` tests, and validation documentation.
+Repository guidance, README, teaching skill, ignore rules, session/evidence records, and manual scenarios.
+
+### Data Structures or Formats
+
+Versioned observations with question, response, assistance, outcome, checkpoint, and final stable concept IDs, including `graph-theory.terminology` and `graph-theory.connectivity`.
 
 ### Implementation Tasks
 
-- Add read-only validation for JSON structure, format versions, evidence references, concept IDs, missing prerequisites, and dependency cycles.
-- Add an explicit repair operation that rebuilds concept summaries from recorded evaluations without generating learner evidence.
-- Use temporary files and atomic replacement for utility-managed writes. Detect stale updates and reject conflicting writers.
-- At session start, offer one relevant retrieval check for a prerequisite needed next.
-- Mark retention only after a successful unaided check in a later session. New failures update current assessments while preserving historical evidence.
-- Handle absent, malformed, and incompatible records explicitly. Preserve originals and request only missing information needed to continue.
-- Treat stored learner responses as data, never as executable instructions.
+Accept a goal; ask up to five relevant probes; present a short prerequisite chain; teach one unresolved concept; distinguish correct, partial, and incorrect responses; repair and reassess; save meaningful observations. Use final IDs without introducing full graph traversal or temporary identifiers.
 
 ### Acceptance Criteria
 
-- Every advancement claim resolves to recorded evidence.
-- Interrupted updates can be detected and repaired.
-- Fresh sessions distinguish previous demonstration from later retention or renewed uncertainty.
-- Invalid or conflicting writes do not silently replace valid state.
+Actual answers change tutor behavior. Advancement requires explanation and novel application. Saved evidence survives a fresh chat in the same checkout. Introducing the later graph requires no concept-ID migration.
 
-### Tests and Manual Validation
+### Automated Tests
 
-Use `unittest` for malformed JSON, unsupported versions, dangling references, cycles, duplicate assessment IDs, stale writes, partial updates, and repair idempotence. Manually validate successful and failed retrieval, changed goals, and restoration from a copied backup.
+Fixture validity and record-format checks. No automated teaching grader is required.
 
-Structural validation does not replace human assessment of teaching quality.
+### Manual Validation Scenario
 
-### Deferred Architectural Decisions
+Teach connectivity using terminology as a prerequisite. Exercise partial and incorrect answers, repair, stop, and resume in the same checkout.
 
-Spaced-repetition algorithms, confidence percentages, multiple learners, synchronization, and databases.
+### Dependencies
 
-## Milestone 3 — Targeted Research and Verified Diagrams
+Verify instruction loading, skill selection, turn-taking, and local file access.
+
+### Deferred Decisions
+
+Credential interpretation, complete projections, shared graph traversal, explicit calibration, agents, hooks, MCP, UI, and databases.
+
+### Risks or Uncertainties
+
+Subjective evaluation and instruction-following errors. Keep evidence visible and treat this as an experimental tutor increment.
+
+## Milestone 2 — Stable Learner-State Representation
 
 ### Objective
 
-Improve accuracy and explanation quality while preserving a working single-agent fallback.
+Establish shared provisional projections and controlled evidence-backed updates.
 
 ### Files and Components
 
-`.codex/agents/researcher.toml`, `.codex/agents/mermaid-maker.toml`, `.codex/agents/svg-maker.toml`, `.agents/skills/visualize/SKILL.md` with skill name `learning-visualize`, teaching integration, local visual artifacts, and renderer support where needed.
+State utility, format reference, teaching integration, fixtures, and state tests.
+
+### Data Structures or Formats
+
+The approved schema: authoritative evidence records, provisional states/confidence, capability summaries, misconceptions, conflicts, and interaction/review timestamps.
 
 ### Implementation Tasks
 
-- Configure narrow specialist profiles using the current Codex TOML format. Inherit the user's model selection.
-- Verify actual profile selection, available tools, and effective permissions before relying on delegation.
-- Request research delegation for uncertain claims or topic mapping. Require sourced findings, prerequisites, assumptions, and gaps.
-- Give diagram makers one concrete idea, intended labels or geometry, and a unique output destination.
-- Use Mermaid for relationships and SVG for spatial or mathematical geometry.
-- Require rendered-image inspection and semantic checking. Return source and preview paths, verification notes, or a clear failure.
-- Keep learner-state writes with the tutor. Use existing rendering facilities; add a local renderer only when a representative diagram requires it.
-- Present supported local previews and provide a prose fallback on rendering failure.
+Implement record creation, validation, idempotency, projection updates, correction handling, and rebuild. Prevent credential/self-report-only promotion to active. Record incidental demonstrated knowledge through the same path.
 
 ### Acceptance Criteria
 
-- The tutor can incorporate a sourced research brief, a correct conceptual diagram, and a correct geometric diagram.
-- Returned diagrams have been rendered, inspected, and checked against their brief.
-- Specialist outputs do not directly alter learner-state records.
-- Unavailable delegation or rendering does not prevent the lesson.
+Every projection explains its basis. Evidence survives updates. Aided answers cannot establish active competence. Weak or conflicting evidence remains uncertain. Projections can be rebuilt from the evidence log.
 
-### Tests and Manual Validation
+### Automated Tests
 
-Validate profile loading, tool access, and fallback behavior. Inspect a prerequisite graph, a vector diagram, reversed-arrow mistakes, incorrect coordinates, unreadable labels, and renderer failure. Confirm diagram agents do not change learner records.
+Missing references, unsupported transitions, conflicting IDs, unsupported versions, correction chains, interrupted updates, and deterministic rebuild.
 
-### Deferred Architectural Decisions
+### Manual Validation Scenario
 
-Interactive visualizations, extensive renderer infrastructure, automatic illustration of every concept, and model-specific optimization.
+Record prior study, hinted success, and failed unaided explanation. Inspect the rusty projection and its supporting records.
 
-## Milestone 4 — Optional Lifecycle Logging
+### Dependencies
+
+Milestone 1 and its stable observation identities.
+
+### Deferred Decisions
+
+Separate learning-history/readiness/retrieval dimensions, numerical scores, decay formulas, scheduled review, multi-user storage, synchronization, and extensive migration machinery.
+
+### Risks or Uncertainties
+
+Categories may oversimplify competence. Preserve scope, confidence, and rationale; do not silently promote ambiguous records.
+
+## Milestone 3 — Small Competency Ontology
 
 ### Objective
 
-Add automatic bookkeeping only if repeated use exposes missed checkpoints.
-
-### Entry Condition
-
-At least two missed checkpoints across five representative sessions, after improving the teaching instructions. Skip this milestone if instruction-driven checkpointing is sufficient.
+Reuse one tiny graph for diagnostics and teaching.
 
 ### Files and Components
 
-Project hook configuration, a small handler, state utility integration, and lifecycle fixtures.
+Graph-theory graph, prompt/rubric bank, graph validation/traversal, and tests.
+
+### Data Structures or Formats
+
+Stable IDs already used in Milestone 1, parent area, scoped objectives, prerequisite edges, graph version, and prompt metadata.
 
 ### Implementation Tasks
 
-- Verify installed-client events and hook trust requirements.
-- Add startup validation and idempotent lifecycle metadata logging.
-- Keep grading and mastery updates in the tutor's explicit workflow.
-- Avoid transcript parsing as a persistence dependency.
-- Keep hooks advisory; never restart an assessment waiting for a learner.
+Author the seven approved concepts. Validate references and cycles. Support ancestor traversal and ordering. Associate prompts with concepts and capabilities.
 
 ### Acceptance Criteria
 
-Duplicate events do not duplicate records. Disabled or failed hooks leave teaching usable.
+BFS shortest paths resolves to the correct chain. Hierarchy membership is distinct from prerequisites. Untested neighbors remain unknown. Earlier learner records resolve without renaming.
 
-### Tests and Manual Validation
+### Automated Tests
 
-Exercise startup, resume, interruption, repeated events, timeouts, and disabled hooks.
+Duplicate IDs, missing nodes, cycles, deterministic traversal, grouping separation, version mismatches, and compatibility with Milestone 1 evidence.
 
-### Deferred Architectural Decisions
+### Manual Validation Scenario
 
-Transcript summarization, background grading, and comprehensive audit logging.
+Select BFS shortest paths and inspect its prerequisite chain and diagnostic prompts.
 
-## Milestone 5 — Optional MCP Learning Tools
+### Dependencies
+
+Milestone 2.
+
+### Deferred Decisions
+
+Other domains, universal deduplication, graph editors, ontology databases, and broad curriculum coverage.
+
+### Risks or Uncertainties
+
+Poor edges create unnecessary lessons. Review prerequisites against scoped objectives and avoid hidden programming requirements.
+
+## Milestone 4 — Background-Based Profile Bootstrapping
 
 ### Objective
 
-Expose reliable learning operations through tools when direct file operations become a demonstrated limitation.
-
-### Entry Condition
-
-A documented need for cross-client operations, validated structured assessment handling, or stronger write coordination that a local utility cannot adequately solve. Hooks are not a prerequisite.
+Turn declared background into conservative exposure priors.
 
 ### Files and Components
 
-A local `learning-tools` server, the existing state utility, project MCP configuration, teaching integration, and protocol tests.
+Background mappings, onboarding instructions, state integration, and mapping tests.
+
+### Data Structures or Formats
+
+Background declarations and explicit mappings to concept IDs and exposure categories.
 
 ### Implementation Tasks
 
-- Verify project trust, stdio server startup, approvals, and structured-result handling in the target client.
-- Begin with local stdio transport and the existing file format.
-- Expose loading state, reading plans, recording assessments, and requesting validated state updates.
-- Return structured data and readable text while retaining conversational quizzes.
-- Require assessment identity and evidence references. Make repeated submissions idempotent.
-- Keep open-ended evaluation with the tutor. Tools validate records and apply established advancement rules.
-- Preserve direct-file fallback and document startup and recovery.
+Preserve original wording. Recognize only supported mappings. Show assumptions. Merge priors without replacing assessments. Record unmatched declarations without inventing concepts.
 
 ### Acceptance Criteria
 
-- A lesson runs through MCP and resumes using the same records.
-- Server unavailability does not prevent continuation through direct files.
-- Repeated submissions do not inflate progress.
-- Invalid operations do not bypass evidence-based advancement.
+Credentials never create active competence. Exposure influences diagnostic starting level. Observed gaps override presumed readiness. Unmapped concepts remain unknown.
 
-### Tests and Manual Validation
+### Automated Tests
 
-Cover invalid requests, duplicate submissions, concurrent writes, server restart, permission failures, round-trip persistence, and parity with the direct-file workflow.
+Credential-only profiles, unmatched backgrounds, repeated onboarding, conflicting declarations, and preservation of demonstrated competence.
 
-### Deferred Architectural Decisions
+### Manual Validation Scenario
 
-Remote hosting, authentication, databases, quiz widgets, analytics dashboards, and plugin distribution. Define final tool schemas only after the milestone's entry condition is met.
+Declare a BSc in Discrete Mathematics and CS, inspect priors, then fail terminology and confirm diagnostic difficulty drops.
 
-## Initial Release Boundary
+### Dependencies
 
-Complete Milestones 1 and 2 and use the system for several real sessions. Add Milestone 3 where research or visuals improve learning. Leave Milestones 4 and 5 gated by observed needs rather than treating them as required implementation work.
+Milestones 2–3.
+
+### Deferred Decisions
+
+Curriculum scraping, broad credential interpretation, institutional equivalence, transcript ingestion, and research agents.
+
+### Risks or Uncertainties
+
+Degree content varies. Map the example degree only to medium expected exposure in terminology, connectivity, and trees. Leave the remaining concepts unmapped without more specific support.
+
+Explicit graph-theory course completion may create high expected exposure to those foundations, with low prior confidence. It still provides no competence evidence. Failed diagnostics revise current competence and questioning difficulty; they do not prove absence of historical exposure.
+
+## Milestone 5 — Adaptive Competency Calibration
+
+### Objective
+
+Locate a useful competence boundary through short explicit calibration.
+
+### Files and Components
+
+Calibration skill, prompt-selection heuristics, checkpoints, and policy tests.
+
+### Data Structures or Formats
+
+Calibration scope, pending prompt, tested capabilities, selection rationale, and stop reason.
+
+### Implementation Tasks
+
+Start at foundation without usable priors or at core with medium/high mapped exposure. Move upward after unaided success. Inspect prerequisites after gaps. Check explanation after recognition-only success. Persist meaningful observations.
+
+### Acceptance Criteria
+
+Responses change question order. Hinted and unaided success differ. Forgetting reports remain visible. All-correct runs may finish without requiring failure.
+
+### Automated Tests
+
+Synthetic sequences for upward movement, prerequisite redirection, aided answers, skips, repetition, and stopping. Test selection policy rather than LLM grading.
+
+### Manual Validation Scenario
+
+Run credential-overestimation, rusty-learner, and strong-knowledge scenarios. Compare questions and provisional projections.
+
+### Dependencies
+
+Milestones 2–4.
+
+### Deferred Decisions
+
+Bayesian tracing, IRT, information-gain optimization, probabilities, and exhaustive examination.
+
+### Risks or Uncertainties
+
+Fatigue and ambiguous questions. Default to eight learner-response turns, stopping earlier when a useful next action is clear, on learner request, or when no informative prompt remains. Budget-limited conclusions remain provisional.
+
+Choose deterministically among untested eligible prompts. Require direct evidence before crediting each concept. Explicit calibration diagnoses first and offers teaching afterward.
+
+## Milestone 6 — Dependency-Aware Personalized Lesson Planning
+
+### Objective
+
+Combine the graph and profile to decide what to skip, refresh, verify, or teach.
+
+### Files and Components
+
+Teaching skill, planning utility, persisted plan, planning tests, and end-to-end scenarios.
+
+### Data Structures or Formats
+
+Prerequisite action, evidence references, rationale, target, graph version, and checkpoint.
+
+### Implementation Tasks
+
+Traverse target-relevant prerequisites. Order them. Choose actions from current projections and their evidence. Teach unresolved concepts. Update the same learner model after new observations.
+
+### Acceptance Criteria
+
+Supported active prerequisites are skipped. Rusty concepts receive refreshers. Unknown/never-learned concepts receive introductory teaching. Conflicted projections receive targeted checks.
+
+### Automated Tests
+
+Action selection, ordering, scope mismatch, conflicts, unrelated concepts, and checkpoint reconstruction.
+
+### Manual Validation Scenario
+
+After calibration, request BFS shortest paths. Inspect personalized actions, complete a repair, and resume in another chat on the same checkout.
+
+### Dependencies
+
+Milestones 1–5.
+
+### Deferred Decisions
+
+Global curriculum optimization, multiple goals, broad ontology expansion, agents, hooks, MCP, and packaging.
+
+### Risks or Uncertainties
+
+Skipping an essential prerequisite incorrectly. Exposure priors never justify prerequisite skipping. Require supported active competence with moderate/high confidence and no unresolved relevant conflict.
+
+| Projection | Default teaching action |
+| --- | --- |
+| Active with sufficient scoped evidence | Skip instruction |
+| Active but conflicted or insufficiently scoped | Verify briefly |
+| Rusty | Concise refresher, then unaided check |
+| Forgotten | Short reconstruction attempt; expand if needed |
+| Exposed/developing | Bridge from demonstrated capabilities |
+| Unknown/never learned | Introductory teaching at the relevant foundation |
+
+## MVP Boundary
+
+Complete all six milestones for one learner in Codex desktop, seven graph-theory concepts, a tiny explicit background mapping, one teaching skill, one calibration skill, a small Python standard-library state utility, JSON persistence in one local checkout, and human pedagogical evaluation.
+
+Milestone 1 remains independently usable. The full MVP requires the background-to-calibration-to-teaching-to-resumption demonstration.
+
+## End-to-End Validation Procedure
+
+1. Start with empty `.learn/` in the normal local checkout.
+2. Declare the example BSc background.
+3. Inspect exposure priors; competence must remain unknown.
+4. Request graph-theory calibration.
+5. Supply unaided successes, partial answers, hinted success, and self-report.
+6. Confirm selection adapts instead of following a fixed question sequence.
+7. Inspect preserved evidence and provisional projections; each estimate must explain its basis.
+8. Request BFS shortest paths.
+9. Inspect a plan that skips demonstrated foundations, refreshes a rusty prerequisite, and teaches an unresolved concept.
+10. Demonstrate understanding through explanation and novel application.
+11. End the chat and start a fresh Codex chat on the same repository checkout.
+12. Recover evidence, relevant projections, and checkpoint without repeating onboarding or full calibration.
+
+## Required Evaluation Scenarios
+
+| Scenario | Required result |
+| --- | --- |
+| A: Credential overestimation | No active concepts from credentials; failed basics lower current readiness; diagnostics and teaching return to foundations |
+| B: Rusty learner | Prior study plus hinted success and failed unaided explanation yields a qualified rusty/forgotten projection; concise refresh; no unsupported active promotion |
+| C: Strong prior knowledge | Relevant unaided explanations/applications skip elementary instruction and move diagnostics toward harder or neighboring unresolved concepts |
+| D: Persistence | A fresh chat on the same checkout recovers evidence; supported active prerequisites remain usable; unresolved concepts remain unresolved |
+
+Also validate skips, unmatched backgrounds, mistaken prerequisite inference, contradictions, evaluation corrections, interrupted saves, and unrelated maintenance requests.
+
+Automated tests validate deterministic behavior and record integrity. Human inspection assesses question quality, grading, explanations, and whether categories help learning.
+
+Do not add clean-clone, cross-machine, synchronization, backup, or multi-device acceptance tests.
+
+## Deferred Extensions
+
+Researcher and visualization agents, automated hooks/session logging, structured quiz tools, MCP learning-tools server, larger competency libraries, broader evaluation infrastructure, packaging, distribution, and plugin architecture remain deferred until MVP evidence justifies them.
+
+Retain the previous hook entry condition: repeated missed checkpoints after improving instructions. Require a demonstrated limitation before MCP. Neither is part of the six-milestone MVP.
+
+## Implementation Discoveries
+
+- Milestone 1 uses final concept IDs and schema version 1 from the first observation. Deterministic fixture validation passed; live behavioral gates subsequently passed and are tracked in [validation notes](validation.md). The sandbox protects `.agents/`, so creating skills required its explicit write approval.
+- Milestone 2: 20 deterministic tests passed. Manual synthetic prior-study + unaided failure + hinted application yields rusty, not active. Novelty and exact scope must be explicit to prevent recognition or narrow checks from unlocking prerequisites.
+- Milestone 3: 24 tests passed. Manually traced terminology → connectivity → BFS → BFS shortest paths. The 14-prompt bank covers explanation and application for each concept. Grouping is separate from prerequisite edges.
+- Milestone 4: manually inspected BSc priors and confirmed no competence promotion. 30 tests passed, including later contradiction, unmatched degree, course exposure, and preservation of existing evidence.
+- Milestone 5: 40 tests passed at this stage, including upward movement, prerequisite redirection, skips, aided answers, bounded stopping, and holding an unanswered question. Manually recorded a connectivity misconception after the example degree and observed a foundation terminology question next. Codex conversational behavior subsequently passed live validation.
+- Milestone 6: 51 tests passed at this stage. Scripted manual validation preserves ten identifiable observations in isolated state. Its plan changes from skip/skip/refresh/teach to skip/skip/skip/teach after new BFS evidence. A separate Python process recovers state and answered checkpoints; actual fresh Codex chat validation subsequently passed.
+
+## Final Validation Status
+
+All six increments pass their deterministic checks and required manual scenarios. The final suite contains 56 passing tests. Live validation across two Codex chats preserved 17 synthetic evidence records, differentiated partial/rusty/active/unknown knowledge, repaired a prerequisite, and resumed the target from files without onboarding. The fresh chat added new evidence to the same model and left untested concepts unknown.
+
+See [live results and the corrected background-alias failure](validation-live.md). Deferred decisions remain deferred; this validation does not establish broad grading reliability or curriculum coverage.

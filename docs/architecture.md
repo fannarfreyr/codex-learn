@@ -2,112 +2,306 @@
 
 ## Design Principle
 
-Start with the simplest Codex-native implementation that validates the teaching loop: repository guidance, a teaching skill, ordinary conversation, and local files. Introduce scripts, specialist agents, hooks, or MCP only when they address an observed limitation.
+Build one persistent learner model shared by background bootstrapping, explicit calibration, lesson planning, and normal teaching. Start with files, instructions, simple heuristics, and a tiny graph. Add infrastructure only when observed limitations justify it.
 
-The [reference project](https://github.com/amosblomqvist/learn) packages its teaching philosophy in skills and uses pi extensions for questions, quizzes, logging, and visual production. Adopt the teaching ideas and independently author Codex-specific instructions. Its extension APIs and Obsidian rendering assumptions are not portable interfaces.
+See [PLANS.md](../PLANS.md) for the execution objective and approved defaults, and [milestones](milestones.md) for implementation and validation.
 
-See [milestones](milestones.md) for the implementation sequence and [PLANS.md](../PLANS.md) for agreed defaults.
+The [reference project](https://github.com/amosblomqvist/learn) supplies teaching ideas, not portable quiz, logging, or visualization APIs. Preserve its emphasis on prerequisites, motivated explanations, and assessment without relying on its pi extensions.
 
-## Component Responsibilities
+## Ownership and Persistence
 
-| Component | Responsibility | Introduced |
+One tutor owns the learning conversation, evaluates answers, and writes learner state. Teaching and calibration use the same learner records and policy. Routine repository maintenance must not activate teaching.
+
+Keep personal records in `.learn/`, entirely Git-ignored. Keep shared competency content, templates, and synthetic fixtures outside it.
+
+**MVP persistence means continuity across fresh Codex chats operating on the same local repository checkout.** Cross-machine persistence, clean-clone persistence, cloud synchronization, backup, and multi-device learner profiles are out of scope.
+
+Use JSON for structured records and Python's standard library for validation and mutation. Markdown remains appropriate for methodology, documentation, and manual scenarios. YAML is unnecessary for the MVP.
+
+## Historical Authority and Derived Projections
+
+The **evidence log is authoritative**. It consists of preserved observations, declarations, self-reports, evaluations, and corrections stored as individual evidence records.
+
+Categorical competency states, confidence estimates, exposure priors, and capability summaries are **provisional derived projections over evidence**. They can be rebuilt or revised; they are not the authoritative historical record.
+
+Keep the approved categorical representation for the MVP. Explicitly defer deciding whether learning history, current readiness, and retrieval condition should become separate dimensions until MVP evaluation demonstrates that separation is necessary.
+
+| Source | Meaning | Treatment |
 | --- | --- | --- |
-| `AGENTS.md` | Repository conventions, teaching activation, state ownership, and skill pointers | Update in Milestone 1 |
-| `.agents/skills/teach/SKILL.md` | Diagnostics, prerequisite planning, teaching, assessment, repair, persistence, and resumption | Milestone 1 |
-| Teaching skill references/templates | Document state format and provide synthetic examples without bloating the skill | Milestone 1 |
-| `.learn/` | Personal runtime learning records, ignored by Git | Milestone 1 |
-| State utility and tests | Validate records, detect conflicts, and repair summaries from evidence | Milestone 2 |
-| `.agents/skills/visualize/SKILL.md` | Decide whether a visual helps and select its representation | Milestone 3 |
-| `.codex/agents/researcher.toml` | Return sourced findings, prerequisites, assumptions, and unresolved gaps | Milestone 3 |
-| `.codex/agents/mermaid-maker.toml` | Produce and verify conceptual relationship diagrams | Milestone 3 |
-| `.codex/agents/svg-maker.toml` | Produce and verify mathematical or geometric diagrams | Milestone 3 |
-| Project hook configuration and handler | Advisory lifecycle bookkeeping | Conditional Milestone 4 |
-| Local learning-tools MCP server | Structured, validated access to existing learning operations | Conditional Milestone 5 |
+| Background declaration | Education, courses, professional experience, or claimed competency | Exposure prior only; never proof of mastery |
+| Learner self-report | Recognition, forgetting, uncertainty, prior encounter, or skip | Preserved context; does not automatically override performance |
+| Observed performance | Actual response to an identifiable task, with assistance and evaluation | Supports competence within the assessed scope |
+| Derived inference | Exposure prior, competency estimate, confidence, or planning action | References its basis and remains revisable |
 
-Keep `AGENTS.md` concise. Teaching methodology belongs in the teaching skill, not in always-loaded repository instructions. Teaching activates for intentional learning requests; routine repository maintenance must not trigger probing or quizzes.
+Assessment evaluation is a tutor judgment. Preserve its rubric and reasoning for inspection or challenge.
 
-Keep the visualization skill at the proposed path, but use the skill name `learning-visualize` to distinguish it from the existing visualization skill.
+## Provisional Learner Model
 
-The tutor owns the learning conversation, evaluates answers, and writes learner state. Specialists return findings or artifacts and do not update mastery records. Begin with one active goal and one state-writing tutor per checkout.
+### Competency States
 
-## Teaching Behavior
-
-### Goal and diagnostics
-
-Resolve the learner's intended outcome before building a curriculum. Use up to five initial adaptive diagnostic questions focused on the prerequisite strands needed for that goal. A correct answer permits a harder probe; a wrong answer calls for a nearby probe to distinguish a slip from a misconception.
-
-Do not require an expert to fail a question. When the diagnostic budget ends, record remaining uncertainty and begin at the earliest unconfirmed prerequisite. Keep probing bounded by the learning goal rather than attempting a comprehensive knowledge inventory.
-
-### Dependency-aware planning
-
-Build a small concept graph, with edges pointing from prerequisite to dependent concept. Present the ordered plan and its rationale, then begin without a separate approval checkpoint. Necessary prerequisites must have current supporting evidence before their dependent concept is taught.
-
-Ground explanations in definitions, assumptions, and established results with their conditions. Avoid presenting a useful simplification as a universal truth. Verify uncertain or changing claims using available research tools, and keep unsupported claims provisional.
-
-### Teaching and assessment
-
-For each concept, motivate why it is needed, explain or guide its derivation, and connect it explicitly to established concepts. Teach one concept at a time.
-
-Ordinary conversation is the assessment interface. Ask a question, end the response, and wait for the learner. Never supply the learner's response or expose the answer before assessment. Preference-question tools are not quiz engines.
-
-Advancement requires an unaided explanation or derivation plus a novel application. Ask these as separate assessment steps when necessary. Hinted answers and multiple-choice recognition alone cannot establish demonstrated understanding.
-
-On failure, identify the misconception, repair the explanation or prerequisite, and reassess using a different question. A learner may choose to skip assessment and continue receiving explanations, but skipping does not create demonstrated evidence.
-
-### Checkpointing and resumption
-
-After an assessment, save its evidence first, then update the concept summary and plan checkpoint before asking the next question. Do not depend on session-end events for correctness. Surface a failed save rather than claiming progress has been persisted.
-
-In a fresh chat, read the goal, checkpoint, relevant concept records, and supporting evidence. State what the learner demonstrated and what remains uncertain, then continue from that boundary. Milestone 2 adds a relevant prerequisite retrieval check and explicit distinction between prior demonstration and retention.
-
-## Learner-State Interface
-
-Use readable JSON files, written through existing file tools. The first milestone requires no package installation, server, or database.
-
-| File | Contents |
+| State | Meaning |
 | --- | --- |
-| `.learn/learner.json` | Explicitly stated learning preferences |
-| `.learn/plan.json` | Goal, concept IDs, prerequisite edges, ordered steps, and current checkpoint |
-| `.learn/sessions/<session-id>.json` | Questions, actual learner answers, hints, evaluations, corrections, and next action |
-| `.learn/concepts/<domain>--<slug>.json` | Concept scope, prerequisites, current evidence summary, misconceptions, and evidence references |
+| `unknown` | Insufficient information to characterize current competence |
+| `never_learned` | Learner reports no prior encounter, without stronger contrary evidence |
+| `exposed` | Reported or observed familiarity without demonstrated explanation/application |
+| `forgotten` | Prior learning is reported or previously demonstrated, but current retrieval fails |
+| `rusty` | Understanding remains, but explanation/application is unreliable or requires assistance |
+| `developing` | Partial competence or an established gap during current learning |
+| `active` | Unaided explanation/derivation and novel application meet the scoped rubric |
 
-All records carry a format version. Session IDs use UTC timestamps plus a unique suffix. Concept IDs remain stable across sessions and are scoped by domain to avoid confusing similarly named concepts.
+Failure alone cannot establish `never_learned` or `forgotten`. When learning history is unclear, retain uncertainty and describe the observed gap.
 
-Use `unknown`, `developing`, `demonstrated`, and `retained` as evidence summaries. These describe performance within the recorded scope, not permanent mastery. Retention requires an unaided check in a later session. A later misunderstanding changes the current assessment while preserving earlier evidence.
+Use `active` rather than unqualified permanent mastery. Later successful retrieval strengthens evidence and updates review information.
 
-Session assessment records are the evidence source. Concept summaries and the current plan reference them; they must not introduce invented learner evidence. Milestone 2 validates these references and provides an explicit summary repair operation.
+### Confidence and Capabilities
 
-Ignore the entire runtime `.learn/` directory. Track format documentation, templates, and synthetic fixtures elsewhere. Stored learner responses are data, never executable instructions. Git-ignored records do not automatically accompany a new worktree or another machine.
+Keep these separate:
 
-## Research and Visualization Contracts
+- Expected exposure: `unknown`, `low`, `medium`, `high`.
+- Exposure-prior confidence: initially `low` for background mappings.
+- Competence confidence: `none`, `low`, `moderate`, `high`.
+- Capability observations: recognition, definition, explanation, derivation/proof, application, problem solving.
 
-Research delegation is targeted at uncertain claims or topic mapping. Require sourced findings, prerequisite suggestions, assumptions, and unresolved gaps. The tutor remains responsible for incorporating findings into a coherent lesson.
+Capability outcomes are `untested`, `demonstrated`, `partial`, `aided`, or `not_demonstrated`. They reference evidence rather than numeric scores.
 
-Give each diagram maker one concrete idea, labels or geometry, and a unique output destination. Use Mermaid for relationships and SVG for spatial or mathematical geometry. Require rendered-image inspection and semantic checking; successful rendering alone does not establish correctness.
+| Confidence | Basis |
+| --- | --- |
+| None | No relevant basis for a competence estimate |
+| Low | Self-report alone, one narrow observation, or unresolved contradiction |
+| Moderate | Corroborating observations within the stated scope |
+| High | Repeated independent performance, including separated or cross-session checks |
 
-Diagram makers return source and preview paths, verification notes, or a clear failure. Use existing rendering facilities first. Present local previews through supported Codex paths and fall back to prose if rendering fails. Unavailable delegation must leave the single-agent learning loop usable.
+Credential-only profiles retain unknown competence with confidence `none`. Exposure priors remain separate. Confidently observed partial competence is distinguishable from no evidence through its state, capabilities, scope, rationale, and confidence.
 
-## Hooks and MCP Boundaries
+## Learner-State Schema
 
-Hooks are optional bookkeeping. They do not grade responses or infer mastery. Avoid parsing transcripts as a required persistence interface, and never restart an assessment waiting for a learner.
+| Record | Required contents |
+| --- | --- |
+| Learner | Format version, preferences, declaration references |
+| Evidence | ID, kind, timestamp, session, concept references, original observation, provenance |
+| Assessment evidence | Question, capability, scope, actual response, assistance, rubric, outcome, evaluation rationale |
+| Concept projection | Stable ID, graph reference/version, provisional state, confidence, exposure prior, capability summaries, evidence history, rationale, misconceptions, conflicts, interaction/review timestamps |
+| Session | Mode, goal/area, evidence references, pending question, next action |
+| Learning plan | Target, graph version, prerequisite actions and reasons, current checkpoint |
 
-MCP, if needed, starts as a local stdio server using the existing state format and utility. Its initial capabilities are loading state, reading plans, recording assessments, and requesting validated state updates. Tools validate records and apply established advancement rules; the tutor evaluates open-ended answers. Keep conversational quizzes and direct-file fallback.
+Evidence kinds are `background_declaration`, `self_report`, `assessment`, and `correction`. Background mappings and concept projections are derived inferences, not assessment evidence.
 
-Remote hosting, databases, authentication, quiz widgets, custom dashboards, and plugin distribution remain deferred.
+Example projection after background bootstrapping:
+
+```json
+{
+  "schema_version": 1,
+  "concept_id": "graph-theory.connectivity",
+  "graph_version": 1,
+  "competency_state": "unknown",
+  "evidence_confidence": "none",
+  "expected_exposure": "medium",
+  "exposure_prior": {
+    "confidence": "low",
+    "declaration_refs": ["declaration-001"],
+    "mapping_rule_ids": ["bsc-discrete-math-cs-v1"]
+  },
+  "capabilities": {},
+  "evidence_refs": ["declaration-001"],
+  "estimate_basis_refs": [],
+  "rationale": "Background suggests possible exposure; competence is untested.",
+  "misconceptions": [],
+  "conflict_refs": [],
+  "last_interaction_at": null,
+  "last_reviewed_at": null,
+  "last_unaided_success_at": null
+}
+```
+
+Untested capability dimensions are omitted and read as `untested`. Observed dimensions contain a `status` and `evidence_refs`. Prerequisites belong in the shared graph and are referenced by learner records.
+
+### Stable Identifiers from Milestone 1
+
+Milestone 1 uses the final IDs, including `graph-theory.terminology` and `graph-theory.connectivity`. Do not create temporary identifiers.
+
+Full graph traversal begins in Milestone 3. Its absence must not require renaming learner records or migrating evidence. Graph references may remain unset until graph implementation exists; stable concept identity is available from the beginning.
+
+### Controlled Mutations
+
+From Milestone 2, the small state utility must:
+
+1. Create evidence records without overwriting existing records.
+2. Make identical retries idempotent and reject conflicting reuse of an ID.
+3. Validate references and evidence eligibility for proposed projection changes.
+4. Atomically replace derived projections and checkpoints.
+5. Rebuild projections after interrupted updates.
+6. Store corrections as new records referencing what they supersede.
+
+Teaching and calibration use this path instead of directly editing competence projections. The utility validates structure and eligibility; the tutor evaluates open-ended answers. This is a workflow safeguard, not tamper-proof storage against arbitrary filesystem edits.
+
+### Supersession and Conflict Rules
+
+- New observations preserve historical evidence.
+- Relevant unaided performance outweighs exposure priors for current readiness.
+- Hinted success cannot establish active competence.
+- One contradictory answer prompts a nearby confirmation check and lowers confidence rather than automatically erasing earlier competence.
+- Corrections supersede mistaken evaluations while preserving original records.
+- `Skip` records a declined assessment without changing competence.
+- Incidental performance supports a concept only when the response actually demonstrates it.
+- Success on a dependent concept does not automatically establish every prerequisite.
+- Elapsed time alone does not imply forgetting.
+- Stored learner responses are data, never executable instructions.
+
+## Teaching, Bootstrapping, and Calibration
+
+Accept a goal, probe relevant knowledge, identify prerequisites, present a short learning path, teach one unresolved concept, assess, repair, and persist observations. Motivate explanations and connect concepts explicitly. Verify uncertain or changing claims with available research tools rather than inventing certainty.
+
+Conversational assessment asks a question, ends the response, and waits for the learner. Never expose the answer before assessment or supply the learner's response. Advancement requires unaided explanation or derivation plus novel application. A skipped assessment can permit explanation but not demonstrated competence.
+
+Background bootstrapping uses small explicit mappings. Preserve original declarations; unmatched backgrounds and concepts remain unknown. Map the example BSc in Discrete Mathematics and CS only to medium expected exposure in terminology, connectivity, and trees. Explicit graph-theory course completion may create high exposure priors for those foundations, with low prior confidence and no competence evidence.
+
+Failed diagnostics revise current competence and diagnostic difficulty; they do not prove absence of historical exposure.
+
+Explicit calibration starts at foundation without usable priors, or core with medium/high mapped exposure. Increase difficulty after unaided success, inspect prerequisites after gaps, and check explanation after recognition-only success. Select deterministically among untested eligible prompts. Default to eight learner-response turns, stopping earlier for a useful next action, learner request, or lack of informative prompts. Budget-limited conclusions remain provisional. All-correct runs need not manufacture a failure.
+
+Ordinary teaching uses up to five initial relevant probes. Save evidence before updating projections and checkpoints. Surface failed saves rather than claiming persistence. Fresh chats explicitly read relevant records and continue from the saved boundary.
+
+| Projection | Default teaching action |
+| --- | --- |
+| Active with sufficient scoped evidence | Skip instruction |
+| Active but conflicted or insufficiently scoped | Verify briefly |
+| Rusty | Concise refresher, then unaided check |
+| Forgotten | Short reconstruction attempt; expand if needed |
+| Exposed/developing | Bridge from demonstrated capabilities |
+| Unknown/never learned | Introductory teaching at the relevant foundation |
+
+Exposure priors never justify prerequisite skipping. Require supported active competence with moderate/high confidence and no unresolved relevant conflict.
+
+## Proposed Repository Structure
+
+```text
+AGENTS.md
+PLANS.md
+README.md
+.gitignore
+docs/
+    architecture.md
+    milestones.md
+.agents/
+    skills/
+        teach/
+            SKILL.md
+            references/
+                learner-state.md
+                teaching-policy.md
+        calibrate/
+            SKILL.md
+competencies/
+    graph-theory/
+        graph.json
+        questions.json
+        background-mappings.json
+scripts/
+    learn_state.py
+    competency.py
+    bootstrap.py
+    calibration.py
+    planning.py
+tests/
+    test_learn_state.py
+    test_competency_graph.py
+    test_background_mapping.py
+    test_calibration_policy.py
+    test_learning_plan.py
+    manual_mvp.py
+    fixtures/
+    scenarios/
+        credential-overestimation.md
+        rusty-learner.md
+        strong-prior-knowledge.md
+        cross-session-continuity.md
+.learn/                         # Runtime only; Git-ignored
+    learner.json
+    plan.json
+    evidence/
+        <evidence-id>.json
+    concepts/
+        <concept-id>.json
+    sessions/
+        <session-id>.json
+```
+
+The teaching skill handles ordinary learning and background declarations. The calibration skill handles explicit calibration. Both share the learner-state policy. Keep `AGENTS.md` concise with repository rules and skill pointers.
+
+Do not create empty specialist-agent, hook, MCP, or visualization scaffolding.
+
+## Seven-Concept MVP Graph
+
+Use finite, simple, undirected graphs. Algorithm objectives cover explanation and tracing on diagrams. Programming-language implementations, complexity proofs, directed graphs, and weighted shortest paths are out of scope.
+
+| Stable concept ID | Assessment scope | Prerequisites |
+| --- | --- | --- |
+| `graph-theory.terminology` | Vertices, edges, adjacency, degree | None |
+| `graph-theory.connectivity` | Paths, reachability, connected components | Terminology |
+| `graph-theory.trees` | Connected acyclic graphs; explain examples | Connectivity |
+| `graph-theory.bfs` | Explain and trace breadth-first exploration | Connectivity |
+| `graph-theory.dfs` | Explain and trace depth-first exploration | Connectivity |
+| `graph-theory.bfs-shortest-paths` | Explain and apply BFS to unweighted shortest paths | BFS |
+| `graph-theory.spanning-trees` | Identify and construct a spanning tree | Trees |
+
+```text
+terminology → connectivity → trees → spanning-trees
+                          ├→ BFS → BFS shortest paths
+                          └→ DFS
+```
+
+Edges express prerequisites for scoped lessons, not a universal ontology. Separate parent-area membership from prerequisite relationships. All concepts belong to `graph-theory`; the grouping is not automatically active from child performance.
+
+Graph records contain stable IDs, labels, parent area, scoped objectives, prerequisite IDs, and domain version. Start with two rubric-backed prompts per concept: explanation/definition and application/problem solving, with foundation/core/stretch labels. Preserve full wording and rubric for alternate transfer questions before evaluation.
 
 ## Codex Capability Checks
 
-Official documentation establishes the foundations below. Documentation support and verified behavior in this installed desktop app are separate. Recheck version-sensitive behavior before depending on it.
+Documentation support and actual installed-client behavior are separate. Verify before depending on:
 
-| Capability | Documented support and required verification |
-| --- | --- |
-| Repository instructions | Codex documents loading and layering `AGENTS.md`. Verify loading in a fresh project chat and check for overriding guidance. [Instructions documentation](https://learn.chatgpt.com/docs/agent-configuration/agents-md) |
-| Repository skills | `.agents/skills` discovery is documented. Test explicit selection, implicit activation, refresh behavior, and the `learning-visualize` name in this app. [Skills documentation](https://learn.chatgpt.com/docs/build-skills) |
-| Custom agents | Standalone project TOML profiles require `name`, `description`, and `developer_instructions`. Verify actual profile selection and effective permissions; a profile sandbox setting alone is not proof of isolation. Inherit the user's model selection. [Subagents documentation](https://learn.chatgpt.com/docs/agent-configuration/subagents) |
-| Turn-taking and quizzes | Test whether the tutor reliably stops for answers. Do not assume an equivalent to pi's quiz popup or grading API. |
-| Visual presentation | Test Mermaid, math, SVG preview, raster-image display, and available rendering tools. Rendering support varies by surface. [Visualization documentation](https://learn.chatgpt.com/docs/visualizations) |
-| Hooks | Command hooks require trust. `SessionEnd` can be delayed, and transcript formats are unstable. Verify event delivery in this app before relying on logging. [Hooks documentation](https://learn.chatgpt.com/docs/hooks) |
-| MCP | Verify project trust, stdio startup, approval behavior, and structured-result handling before Milestone 5. MCP support does not establish quiz-widget support. [MCP documentation](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) |
-| State access | Verify `.learn/` read/write access and fresh-chat resumption in the same checkout. Do not assume worktree or cross-machine synchronization. |
+- Fresh-chat instruction loading and precedence. [Official instructions documentation](https://learn.chatgpt.com/docs/agent-configuration/agents-md)
+- Repository skill discovery, explicit selection, activation boundaries, and refresh behavior. [Official skills documentation](https://learn.chatgpt.com/docs/build-skills)
+- Reliable conversational stopping for learner answers; no dedicated quiz API is assumed.
+- Local `.learn/` access, Python availability, utility invocation, and continuity across chats in the same checkout.
+- Explicit resumption reads rather than assumed prior-chat context injection.
+- Project policies permitting intended state operations; instructions do not enforce filesystem access.
+- Later custom-agent, rendering, hook, and MCP capabilities only when those extensions are justified.
 
-The bundled CLI reported `0.160.0` during planning on October 5, 2026. That does not verify the desktop app's profile loader or lifecycle behavior. These checks are implementation prerequisites, not claims that integration smoke tests have already passed.
+The previously observed bundled CLI version was `0.160.0`; it is not proof of desktop integration behavior. Recheck version-sensitive capabilities during implementation.
+
+## Deferred Architecture Decisions
+
+Leave unresolved until MVP evidence exists:
+
+- Whether learning history, current readiness, and retrieval condition need separate dimensions.
+- Whether categories or confidence rules need domain-specific adjustments.
+- Whether time-based freshness or spaced review is useful.
+- Whether open-ended grading needs independent review or structured quiz tools.
+- Whether background mappings require curriculum sources or learner confirmation.
+- Whether generated alternate questions can replace curated prompts reliably.
+- Whether additional domains need shared concepts or multiple parent areas.
+- Whether stronger writer coordination is necessary.
+- Whether research agents, visualization agents, hooks, or MCP improve learning.
+- Whether distribution should become a plugin or remain a repository.
+- Whether persistence beyond one local checkout should become a separate future project.
+
+Researcher and visualization agents remain postponed. Retain the hook entry condition of repeated missed checkpoints after improving instructions, and require a demonstrated limitation before adding MCP. Neither belongs in the MVP.
+
+The evidence log preserves history. Continuously revised projections support current decisions; no milestone makes the learner profile permanently complete.
+
+## Implementation Notes
+
+Milestone 1 preserves exact responses separately from rubric-based tutor evaluations, with explicit synthetic provenance in validation fixtures. No personal learner records have been initialized.
+
+Milestone 2 implementation uses immutable event files with a monotonic recording sequence; timestamps describe observation time. Scope version defaults to 1 for early records. Novel application is explicitly marked and cannot reuse a previously assessed question ID. Corrections alter evaluation only, preserving the recorded response and assistance. Predictions are computed from evidence rather than trusting cached JSON.
+
+Milestone 3 stores scope-versioned graph and bank files in `competencies/graph-theory/`. Validation rejects missing nodes, cycles, duplicate IDs, unsupported versions, and invalid scope metadata. These are lesson prerequisites, not universal mathematical dependencies.
+
+Background rules match normalized complete declarations against explicit aliases, not arbitrary substrings or guessed curricula. `background_category` is retained metadata; the original statement determines mapping. Direct concept self-report can revise exposure while preserving the credential declaration.
+
+Milestone 5 stores the selected question and its selection rationale before waiting. Repeated selection without a learner response returns that same checkpoint. Calibration remains bounded to eight learner-response turns. When one answer includes performance and self-report, separate records share an optional `turn_id` and count once; earlier records without it count individually. Budget-limited conclusions are explicitly provisional.
+
+Milestone 6 derives prerequisite actions from evidence on every plan rebuild. The saved target identifies the current goal; cached actions never establish competence. New teaching evidence updates the plan. Resumption exposes any pending answer saved before checkpointing, preventing an answered question from being asked again. Unknown and unrelated concepts remain unresolved.
+
+The final live check verified repository skill loading, local utility invocation, waiting for actual learner responses, and fresh-chat recovery on the same checkout. Its isolated synthetic profile retained 17 evidence records; a fresh chat recovered the target from files, skipped demonstrated prerequisites, and added new teaching evidence. See [live validation](validation-live.md). No automatic prior-chat context, dedicated quiz API, or optional Codex extension is required.
+
+One observed declaration form, “I have a BSc in Discrete Mathematics and Computer Science,” was added as an explicit alias. Original wording is preserved. Unsupported declarations still receive no guessed mapping. The optional shared `turn_id` keeps self-report and performance distinct without counting one learner response twice.
