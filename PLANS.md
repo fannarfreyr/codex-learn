@@ -104,3 +104,9 @@ Implementation discoveries: exact background aliases, terminal calibration stop 
 Validation completed on 2026-10-21: a fresh chat discovered README/user-guide documentation from the exact orientation question and accurately described v0.1 without creating state. The guide's six-message walkthrough then ran verbatim in that chat; declaration, calibration, skip, stop, and inspection behaved as documented. Its two evidence records are synthetic, all seven competence estimates remain unknown, and state validation passes. All 56 existing tests pass; implementation hashes and personal-state isolation are unchanged.
 
 An additional documentation clarification distinguishes self-report skips consumed per run from assessment question IDs excluded across runs. No runtime defect was discovered in the exercised workflow and no learning implementation was changed. New live validation covers the documented walkthrough, not every historical v0.1 workflow; remaining interface limitations and the retained chat/evidence references are in the release record. The files are ready to commit before a v0.1.1 tag is created.
+
+## v0.1.2 Broad Competency Calibration
+
+The [v0.1.2 plan](docs/releases/v0.1.2-plan.md) defines broad survey calibration and target-specific focused calibration, an inspectable evidence-based coverage policy, bounded resumable sessions, backward-compatible checkpoints, acceptance scenarios, and required documentation changes.
+
+Survey calibration is now the default for whole-area requests without letting a foundational gap terminate the survey. Existing evidence, conservative projections, stable concept IDs, and the seven-concept scope remain intact. Implementation, all 78 standard-library tests, scripted walkthroughs, and live fresh-chat acceptance pass. See the [v0.1.2 validation record](docs/releases/v0.1.2.md) for results and limitations.

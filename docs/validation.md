@@ -50,3 +50,7 @@ The runner is a reproducible fixture preparation tool, not a simulated Codex con
 | Scope and isolation | Seven graph nodes; standard-library utility; no personal state or deferred infrastructure created |
 
 The open-ended evaluations and concrete graph answers were inspected manually. The [live record](validation-live.md) preserves chat IDs, observed behavior, evidence IDs, the mapping failure and correction, and fixture locations for inspection or removal.
+
+## v0.1.2 — Broad Survey Calibration
+
+Implementation and automated/scripted checks pass: 78 standard-library tests, a fourteen-response mixed-knowledge survey with an eight-turn budget pause and fresh-process resumption, and the existing ten-record teaching/refresher regression using explicit focused calibration. All records are isolated and synthetic. BFS, DFS, and shortest paths are active while connectivity remains developing; no prerequisite credit is inferred. See the [v0.1.2 record](releases/v0.1.2.md) for evidence locations and discoveries. Two new actual Codex chats also passed the v0.1.2 live gate: an eight-response survey pause, fresh-chat continuation to fourteen responses, a traversal-based connectivity explanation without changing prior evidence, and a separate five-response focused diagnostic that excluded unrelated branches. Both chats are archived and all nineteen live observations remain synthetic. Historical live validation above is preserved separately.

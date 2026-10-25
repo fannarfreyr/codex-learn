@@ -1,6 +1,6 @@
 # codex-learn
 
-A Codex-native tutor that uses demonstrated understanding to decide what to teach next. **v0.1.1 documents the existing v0.1 MVP; it adds no learning features.**
+A Codex-native tutor that uses demonstrated understanding to decide what to teach next. **v0.1.2 adds broad survey calibration and target-specific readiness checks.**
 
 ## Setup and current scope
 
@@ -10,11 +10,17 @@ The MVP covers seven concepts in finite, simple, undirected graphs: terminology,
 
 ## Quick start
 
-For a short diagnostic, say:
+For a broad survey, say:
 
 > I have a BSc in Discrete Mathematics and Computer Science. Calibrate my graph-theory knowledge.
 
-Background is optional and never proves mastery. Answer one question at a time; you can ask for a hint, report uncertainty, or say “Skip.”
+Survey calibration samples across all seven concepts before targeted follow-ups; a foundational gap does not stop it from examining downstream strengths. The default budget is eight response turns. Ask for 1–14 turns per block, pause, or continue later with another bounded block. Previous direct evidence is reused, and the summary distinguishes tested scope from competence and remaining uncertainty.
+
+For target-specific readiness, say:
+
+> Use focused calibration to check my readiness for BFS shortest paths, with a budget of four responses.
+
+Background is optional and never proves mastery. Answer one question at a time; you can ask for a hint, report uncertainty, or say “Skip.” Say “Pause calibration” to resume the same run later; “Stop calibration” ends it. The finite question bank is not replenished by starting again.
 
 You can also start teaching directly, without calibration:
 
@@ -31,7 +37,7 @@ The [user guide](docs/user-guide.md) gives canonical prompts, inputs, options, s
 | I want to… | Guide |
 | --- | --- |
 | Declare education, courses, experience, or claimed competency | [Background](docs/user-guide.md#declare-background) |
-| Start, continue, or stop a diagnostic | [Calibration](docs/user-guide.md#calibration) |
+| Survey knowledge, check readiness, pause, continue, or stop | [Calibration](docs/user-guide.md#calibration) |
 | Learn a concept or get a prerequisite-aware path | [Teaching](docs/user-guide.md#request-teaching) |
 | Ask for hints, skip, or report forgotten knowledge | [Respond and request help](docs/user-guide.md#respond-and-request-help) |
 | Inspect my learner profile | [Profile inspection](docs/user-guide.md#inspect-the-learner-profile) |
@@ -45,4 +51,4 @@ Personal state is JSON under Git-ignored `.learn/`. Evidence is preserved; estim
 
 ## Development and release evidence
 
-Run `python3 -m unittest discover -s tests -v` and `git diff --check`. See [v0.1.1 release validation](docs/releases/v0.1.1.md), [technical architecture](docs/architecture.md), and the [original MVP plan](PLANS.md).
+Run `python3 -m unittest discover -s tests -v` and `git diff --check`. See [v0.1.2 release validation](docs/releases/v0.1.2.md), [technical architecture](docs/architecture.md), and the [original MVP plan](PLANS.md).

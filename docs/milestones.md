@@ -1,5 +1,7 @@
 # Implementation Milestones
 
+The six milestones below document the original v0.1 MVP and its validation. v0.1.2 revises calibration selection and bounded-session behavior without changing the seven-concept graph or competence rules; see the [v0.1.2 plan](releases/v0.1.2-plan.md) and [validation record](releases/v0.1.2.md) for the current survey/focused policy.
+
 ## Scope and Execution Order
 
 Follow [PLANS.md](../PLANS.md) and the [architecture](architecture.md). The six-milestone MVP covers one learner and seven graph-theory concepts. Milestone 1 is independently usable; the full MVP validates background bootstrapping, calibration, personalized teaching, and resumption.

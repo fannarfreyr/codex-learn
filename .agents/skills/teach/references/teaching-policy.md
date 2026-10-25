@@ -8,6 +8,8 @@ Use `competencies/graph-theory/questions.json` for initial prompts and private r
 
 For connectivity, distinguish adjacency from reachability through paths. A wrong claim that all vertices must be directly adjacent needs that repair; a learner who remembers paths but cannot explain components may need only a bridge. For BFS, connect FIFO exploration to distance layers; a rusty learner can reconstruct one layer trace rather than repeat all graph terminology.
 
+When a survey finds weak connectivity alongside directly demonstrated BFS or DFS, use that retained traversal knowledge to explain reachability or components. Distinguish forgotten names from failed application using the recorded capability evidence. These connections guide the explanation; they never credit connectivity or bypass its independent unaided checks.
+
 Unaided scoped explanation or derivation plus fresh application supports active competence. Preserve the exact answer, assistance, evaluation rationale, and misconceptions. Never infer all prerequisites from dependent success. Prior study plus aided performance suggests a refresher; failure alone does not diagnose forgetting or never-learning.
 
 After repair, obtain new unaided evidence rather than changing the old outcome. Correct a tutor grading mistake with an explicit correction record. At chat end, save the pending question and next action so a fresh chat can continue in this same checkout.

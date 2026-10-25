@@ -36,7 +36,7 @@ def run(path):
                   'statement': 'BSc in Discrete Mathematics and Computer Science'})
     initial = store.projections()
     require(all(p['competency_state'] == 'unknown' for p in initial.values()), 'Credential created competence')
-    step = start(store, 'diagnostic')
+    step = start(store, 'diagnostic', strategy='focused', target='graph-theory.connectivity')
     trajectory = []
     replies = {
         'graph-theory.connectivity.explanation': (

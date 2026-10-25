@@ -157,7 +157,30 @@ Background bootstrapping uses small explicit mappings. Preserve original declara
 
 Failed diagnostics revise current competence and diagnostic difficulty; they do not prove absence of historical exposure.
 
-Explicit calibration starts at foundation without usable priors, or core with medium/high mapped exposure. Increase difficulty after unaided success, inspect prerequisites after gaps, and check explanation after recognition-only success. Select deterministically among untested eligible prompts. Default to eight learner-response turns, stopping earlier for a useful next action, learner request, or lack of informative prompts. Budget-limited conclusions remain provisional. All-correct runs need not manufacture a failure.
+### Calibration Selection and Coverage
+
+v0.1.2 distinguishes **survey** calibration of the seven-concept area from **focused** calibration of a target and its prerequisite closure. Whole-area requests default to survey; target-specific readiness requests use focused. The graph's lesson prerequisites guide diagnosis and instruction without gating downstream diagnostic questions. Neither strategy credits prerequisites from dependent performance.
+
+Survey selection is deterministic:
+
+1. Reuse direct historical assessments. A representative sample is a non-skip assessment with the current canonical scope/version and capability explanation/derivation or application/problem solving. Incorrect, partial, or aided attempts count as tested coverage; credentials, self-report, narrow scopes, and skips do not.
+2. Sample uncovered concepts before same-concept follow-ups. Prefer connectivity initially with medium/high mapped exposure, otherwise terminology, then stable concept order. Defer skipped uncovered concepts until other available uncovered concepts have been sampled. Prefer explanation, except application for a latest relevant `knows_without_name` report; use another available capability if necessary.
+3. After breadth sampling, prioritize conflicting evidence, explanation/application discrepancies (including an untested counterpart to a gap), missing evidence for a demonstrated strength, then unresolved gaps. Break ties by stable concept order and bank order. Supported ready concepts need no further questions. Use corrected evaluations and preserve different depths across concepts.
+4. End when scoped readiness is supported or no informative unused bank prompt remains. A prerequisite gap cannot end a survey. Budget limits pause it. All-correct runs need not manufacture failure.
+
+Focused selection starts at the deepest unresolved concept in the target closure, confirms other capabilities after success, and descends to unresolved prerequisites after gaps. When prerequisite probing offers no next question, two responses leaving the latest gapped concept unresolved may establish a useful teaching boundary. Selection never falls back outside the target closure. Supported readiness and prompt exhaustion also end a focused run.
+
+Selection and `resume` return an evidence-derived coverage report per scoped concept: sampled status, assessment and effective evaluation references, representative current-scope references, tested-now versus historical references, skipped/deferred participation, capability outcomes, untested explanation/application dimensions, readiness, remaining prompt IDs, and uncertainty. Report selection rationale and pause/stop reason. Coverage is not stored as an authoritative projection, and complete breadth never means area mastery. Failed terminology retrieval and successful application remain independent capability observations; current competence thresholds do not change.
+
+### Calibration Checkpoints and Bounds
+
+The CLI exposes `calibrate --strategy survey|focused [--target TARGET_ID] [--budget N]`. Focused requires a supported target; survey rejects one. Each block permits 1–14 response turns, default eight. There is no time limit. Count shared-turn performance/self-report once, and corrections zero times. A consumed prompt is saved before a budget pause, even for a self-report-only response on the final turn.
+
+New calibration checkpoints use `schema_version: 2`, retaining ID, mode, goal, area, evidence references, pending question/sequence, selection rationale, and next action. Add `strategy`, nullable `target`, `status` (`active`, `paused`, `completed`, `stopped`), nullable `pause_reason`/`stop_reason`, block `budget`, cumulative `response_limit`, cumulative `response_count`, and `consumed_question_ids`. Teaching sessions, evidence, learner metadata, projections, graph, and plan formats remain version 1.
+
+`pause SESSION_ID` preserves an unanswered question. Budget exhaustion pauses automatically when informative work remains. `next SESSION_ID` holds paused state without silently extending the budget; `next SESSION_ID --budget N` resumes with N additional responses. Natural-language continuation defaults to another eight-turn block. An active run ignores continuation budgets rather than replenishing them. An unanswered prompt stays pending, and an answer saved before checkpointing is recovered once. `stop SESSION_ID` clears the question and ends the run permanently. Completed/stopped sessions do not reopen or get rewritten by `next`.
+
+Version-1 calibration checkpoints remain readable. Unfinished area runs adopt survey defaults in memory and upgrade only on a checkpoint update, preserving pending prompts, counts, and the old budget. Old ended runs remain ended. No bulk migration, evidence rewrite, projection-rule change, or automatic regrading occurs. Globally assessed question IDs remain excluded; self-report-consumed prompts remain excluded within their run. The fourteen-question bank is unchanged and calibration does not generate replacements. A completed run can still have unresolved concepts because of prompt exhaustion.
 
 Ordinary teaching uses up to five initial relevant probes. Save evidence before updating projections and checkpoints. Surface failed saves rather than claiming persistence. Fresh chats explicitly read relevant records and continue from the saved boundary.
 
@@ -298,7 +321,7 @@ Milestone 3 stores scope-versioned graph and bank files in `competencies/graph-t
 
 Background rules match normalized complete declarations against explicit aliases, not arbitrary substrings or guessed curricula. `background_category` is retained metadata; the original statement determines mapping. Direct concept self-report can revise exposure while preserving the credential declaration.
 
-Milestone 5 stores the selected question and its selection rationale before waiting. Repeated selection without a learner response returns that same checkpoint. Calibration remains bounded to eight learner-response turns. When one answer includes performance and self-report, separate records share an optional `turn_id` and count once; earlier records without it count individually. Budget-limited conclusions are explicitly provisional.
+The original Milestone 5 implementation stores the selected question and its selection rationale before waiting. Repeated selection without a learner response returns that same checkpoint. Its original calibration was bounded to eight learner-response turns; v0.1.2 replaces this with resumable bounded blocks as described above. When one answer includes performance and self-report, separate records share an optional `turn_id` and count once; earlier records without it count individually. Budget-limited conclusions are explicitly provisional.
 
 Milestone 6 derives prerequisite actions from evidence on every plan rebuild. The saved target identifies the current goal; cached actions never establish competence. New teaching evidence updates the plan. Resumption exposes any pending answer saved before checkpointing, preventing an answered question from being asked again. Unknown and unrelated concepts remain unresolved.
 

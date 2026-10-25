@@ -365,9 +365,11 @@ class Store:
 
     def check_session(self, value, events):
         require(isinstance(value, dict), 'Session must be an object')
-        require(value.get('schema_version') == 1, 'Unsupported session version')
+        version = value.get('schema_version')
+        require(version in {1, 2}, 'Unsupported session version')
         identifier(value.get('id'))
         require(value.get('mode') in {'teaching', 'calibration'}, 'Invalid session mode')
+        require(version == 1 or value['mode'] == 'calibration', 'Teaching sessions use version 1')
         nonempty(value.get('goal'), 'session goal')
         refs = value.get('evidence_refs', [])
         require(isinstance(refs, list) and all(r in events and events[r]['session_id'] == value['id'] for r in refs), 'Invalid session evidence references')
@@ -378,8 +380,38 @@ class Store:
             require(pending.get('concept_id') in IDS, 'Pending question needs a stable concept ID')
             nonempty(pending.get('text'), 'pending question text')
         if value.get('mode') == 'calibration':
-            require(type(value.get('budget')) is int and 1 <= value['budget'] <= 8,
+            require(type(value.get('budget')) is int and 1 <= value['budget'] <= (8 if version == 1 else 14),
                     'Invalid calibration response budget')
+            if version == 2:
+                require(value.get('area_id') == 'graph-theory', 'Invalid calibration area')
+                require(value.get('strategy') in {'survey', 'focused'}, 'Invalid calibration strategy')
+                target = value.get('target')
+                require(target in IDS if value['strategy'] == 'focused' else target is None,
+                        'Focused calibration requires a supported target; survey takes no target')
+                require(value.get('status') in {'active', 'paused', 'completed', 'stopped'}, 'Invalid calibration status')
+                require(type(value.get('response_limit')) is int and value['response_limit'] >= value['budget'],
+                        'Invalid calibration response limit')
+                require(type(value.get('response_count')) is int and value['response_count'] >= 0,
+                        'Invalid calibration response count')
+                consumed = value.get('consumed_question_ids')
+                require(isinstance(consumed, list) and len(consumed) == len(set(consumed)), 'Invalid consumed questions')
+                for question_id in consumed:
+                    identifier(question_id)
+                if value['status'] == 'paused':
+                    nonempty(value.get('pause_reason'), 'pause reason')
+                else:
+                    require(value.get('pause_reason') is None, 'Unexpected pause reason')
+                if value['status'] in {'completed', 'stopped'}:
+                    nonempty(value.get('stop_reason'), 'stop reason')
+                    require(pending is None, 'Ended calibration cannot have a pending question')
+                else:
+                    require(value.get('stop_reason') is None, 'Unexpected stop reason')
+                if pending and value['strategy'] == 'focused':
+                    try:
+                        from .competency import Graph
+                    except ImportError:
+                        from competency import Graph
+                    require(pending['concept_id'] in Graph.load().ordered(target), 'Pending question outside target path')
         sequence = value.get('pending_sequence', value.get('recording_sequence', len(events)))
         require(type(sequence) is int and 0 <= sequence <= len(events), 'Invalid checkpoint sequence')
 
@@ -424,7 +456,6 @@ class Store:
         sessions = self.sessions()
         latest = max(sessions, key=lambda s: s['updated_at'], default=None)
         if latest:
-            require(latest.get('schema_version') == 1, 'Unsupported session version')
             identifier(latest.get('id'))
             own = [e for e in events if e['session_id'] == latest['id']]
             latest['evidence_refs'] = [e['id'] for e in own]
@@ -437,6 +468,17 @@ class Store:
                 latest['next_action'] = ('Run next for this calibration session; the pending response is already saved'
                                          if latest['mode'] == 'calibration' else
                                          'Use the saved response and current plan; do not ask the answered question again')
+            if latest['mode'] == 'calibration':
+                try:
+                    from .calibration import coverage, normalized_session
+                except ImportError:
+                    from calibration import coverage, normalized_session
+                latest = normalized_session(latest)
+                latest['response_count'] = len({e.get('turn_id', e['id']) for e in own
+                                                if e['kind'] in {'assessment', 'self_report'}})
+                latest['coverage'] = coverage(latest, events, self.projections())
+                if latest['status'] == 'paused':
+                    latest['next_action'] = 'Continue calibration with next SESSION_ID --budget N; recover any saved response first'
         return {'evidence_count': len(events), 'latest_session': latest,
                 'concepts': self.projections(), 'plan': self.plan(), 'continuity': 'same-local-checkout'}
 
@@ -450,19 +492,30 @@ def main():
         sub.add_parser(name).add_argument('file', type=Path)
     for name in ('inspect', 'validate', 'rebuild', 'resume'):
         sub.add_parser(name)
-    sub.add_parser('calibrate').add_argument('--session-id')
+    calibration = sub.add_parser('calibrate')
+    calibration.add_argument('--session-id')
+    calibration.add_argument('--strategy', choices=('survey', 'focused'), default='survey')
+    calibration.add_argument('--target')
+    calibration.add_argument('--budget', type=int, default=8, help='Response turns in this block (1–14; default 8)')
     sub.add_parser('plan').add_argument('target')
-    for name in ('next', 'stop'):
-        sub.add_parser(name).add_argument('session_id')
+    for name in ('next', 'pause', 'stop'):
+        operation = sub.add_parser(name)
+        operation.add_argument('session_id')
+        if name == 'next':
+            operation.add_argument('--budget', type=int, help='Additional response turns when resuming a paused calibration')
     args = parser.parse_args()
     try:
         store = Store(args.state_dir, args.synthetic)
-        if args.command in {'calibrate', 'next', 'stop'}:
+        if args.command in {'calibrate', 'next', 'pause', 'stop'}:
             try:
                 from .calibration import advance, start
             except ImportError:
                 from calibration import advance, start
-            result = start(store, args.session_id) if args.command == 'calibrate' else advance(store, args.session_id, stop=args.command == 'stop')
+            if args.command == 'calibrate':
+                result = start(store, args.session_id, budget=args.budget, strategy=args.strategy, target=args.target)
+            else:
+                result = advance(store, args.session_id, stop=args.command == 'stop', pause=args.command == 'pause',
+                                 budget=getattr(args, 'budget', None))
         elif args.command in {'record', 'session'}:
             result = getattr(store, args.command)(json.loads(args.file.read_text()))
         elif args.command == 'inspect':
