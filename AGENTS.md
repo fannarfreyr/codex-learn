@@ -6,6 +6,8 @@
 
 ## Learning Requests
 
+For capability, setup, usage, or troubleshooting questions, start with [README.md](README.md) and the canonical [user guide](docs/user-guide.md). Answer orientation questions from these documents without starting a lesson, assessment, or learner-state write. The guide describes existing behavior; teaching methodology remains in the skills below.
+
 For intentional learning requests, read `.agents/skills/teach/SKILL.md`; for explicit calibration, read `.agents/skills/calibrate/SKILL.md`. Repository maintenance must not trigger teaching or modify personal state.
 
 Ask one assessment, end your response, and wait for the actual learner. Never invent answers or claim synthetic tests are personal evidence. Credentials create exposure priors, never active competence. Require unaided explanation or derivation plus novel application before advancement.

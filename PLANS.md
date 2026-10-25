@@ -90,3 +90,17 @@ This plan defines the approved implementation scope; the progress notes below de
 All six milestones are implemented and validated. The final suite passes 56 standard-library tests, including early-ID compatibility, immutable corrections, adaptive selection, evidence-derived lesson actions, and checkpoint recovery. Two actual Codex chats demonstrated the background-to-calibration-to-teaching-to-fresh-chat loop, with all 17 live-test observations explicitly synthetic and personal `.learn/` untouched.
 
 See [validation results](docs/validation.md) and [live behavior, evidence trace, and failures](docs/validation-live.md). The observed sentence-form background alias gap was corrected without expanding credential interpretation. The deferred architecture decisions and seven-concept boundary remain unchanged.
+
+## Approved v0.1.1 Documentation Release
+
+Document and improve discoverability of the implemented v0.1 system, without new learning behavior, revised state semantics, skill changes, or changes to calibration/teaching logic.
+
+Deliver a concise README, one canonical user guide with a capability reference and ten required fields per workflow, learner-model/calibration/teaching/resumption guidance, troubleshooting, and AGENTS.md documentation links. Keep CLI/operator material secondary to natural-language examples and document only actual options. Preserve the six-milestone MVP history above.
+
+Validation requires a fresh Codex chat whose sole initial prompt is “What can I do with codex-learn and how do I get started?”, followed by a guide workflow performed exactly as written in isolated synthetic state. Run existing tests, check links and whitespace, verify implementation files and personal state are unchanged, and record any runtime bugs separately rather than fixing them in this release.
+
+Implementation discoveries: exact background aliases, terminal calibration stop semantics, finite assessed-question reuse, evaluation-only corrections, and the write effects of resume/rebuild are now explicit in the guide. No functionality was added to accommodate the documentation. See the [v0.1.1 release record](docs/releases/v0.1.1.md) for source inventory and validation status. Tagging/publishing is not part of implementation.
+
+Validation completed on 2026-10-21: a fresh chat discovered README/user-guide documentation from the exact orientation question and accurately described v0.1 without creating state. The guide's six-message walkthrough then ran verbatim in that chat; declaration, calibration, skip, stop, and inspection behaved as documented. Its two evidence records are synthetic, all seven competence estimates remain unknown, and state validation passes. All 56 existing tests pass; implementation hashes and personal-state isolation are unchanged.
+
+An additional documentation clarification distinguishes self-report skips consumed per run from assessment question IDs excluded across runs. No runtime defect was discovered in the exercised workflow and no learning implementation was changed. New live validation covers the documented walkthrough, not every historical v0.1 workflow; remaining interface limitations and the retained chat/evidence references are in the release record. The files are ready to commit before a v0.1.1 tag is created.
